@@ -13,18 +13,44 @@ public class World {
     int numberOfAnts;
     public int numberOfCities;
     public double[][] pheromoneMatrix;
+    double evaporationCoefficient;
+    ArrayList<Route> antRoutes = new ArrayList<>();
 
-    public World(int numberOfCities, int numberOfAnts, int pheromoneWeight, int visibilityWeight) {
+    public World(int numberOfCities, int numberOfAnts, int pheromoneWeight, int visibilityWeight, double evaporationCoefficient) {
         this.numberOfAnts = numberOfAnts;
         this.visibilityWeight = visibilityWeight;
         this.pheromoneWeight = pheromoneWeight;
         this.numberOfCities = numberOfCities;
+        this.evaporationCoefficient = evaporationCoefficient;
         distanceMatrix = new double[numberOfCities][numberOfCities];
+        pheromoneMatrix = new double[numberOfCities][numberOfCities];
         for (int iterator = 0; iterator < numberOfCities; iterator++) {
             cities.add(new City(xBound, yBound));
         }
         calculateDistanceMatrix();
         initPheromoneMatrix();
+        for (int index = 0; index < numberOfAnts; index++) {
+            if (index == 1054) {
+                int i = 0;
+            }
+            Route antRoute = new Route(this);
+            antRoutes.add(antRoute);
+            updatePheromone(antRoute);
+        }
+    }
+
+    public ArrayList<Route> getAntRoutes() {
+        return antRoutes;
+    }
+
+    public Route getBestRoute() {
+        Route bestRoute = antRoutes.get(antRoutes.size() - 1);
+        for (Route route : antRoutes) {
+            if (route.totalDistance < bestRoute.totalDistance) {
+                bestRoute = route;
+            }
+        }
+        return bestRoute;
     }
 
     private void calculateDistanceMatrix() {
@@ -45,6 +71,22 @@ public class World {
         for (int source = 0; source < cities.size(); source++) {
             for (int destination = 0; destination < cities.size(); destination++) {
                 pheromoneMatrix[source][destination] = 1.0;
+            }
+        }
+    }
+
+    private void updatePheromone(Route antRoute) {
+        double totalDistance = antRoute.totalDistance;
+        decayPheromone();
+        for (int index = 0; index < antRoute.sequence.size() - 1; index++) {
+            pheromoneMatrix[index][index + 1] += (1 / totalDistance);
+        }
+    }
+
+    private void decayPheromone() {
+        for (int source = 0; source < cities.size(); source++) {
+            for (int destination = 0; destination < cities.size(); destination++) {
+                pheromoneMatrix[source][destination] = pheromoneMatrix[source][destination] * (1 - evaporationCoefficient);
             }
         }
     }
