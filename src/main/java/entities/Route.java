@@ -53,15 +53,9 @@ public class Route {
                 nextVisitProbabilityDistribution[index] = Math.pow(pheromone, pheromoneWeight)
                         * Math.pow(visibility, visibilityWeight);
             }
-            List<Double> pre = Arrays.stream(nextVisitProbabilityDistribution).boxed().collect(Collectors.toList());
             convertToProbabilities(nextVisitProbabilityDistribution);
-            EnumeratedIntegerDistribution distribution = null;
-            try {
-                distribution = new EnumeratedIntegerDistribution(range
-                        , nextVisitProbabilityDistribution);
-            } catch (Exception exception) {
-                System.out.println(nextVisitProbabilityDistribution);
-            }
+            EnumeratedIntegerDistribution distribution = new EnumeratedIntegerDistribution(range
+                    , nextVisitProbabilityDistribution);;
             currentCity = distribution.sample();
             setVisitStatus(currentCity);
         }
