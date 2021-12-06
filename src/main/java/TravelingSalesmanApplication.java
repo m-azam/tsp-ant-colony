@@ -1,14 +1,13 @@
 import entities.Route;
 import entities.World;
 import org.jfree.ui.RefineryUtilities;
-
 import java.util.Objects;
 import java.util.Scanner;
 
 public class TravelingSalesmanApplication {
     public static void main(String[] args) {
-        int numberOfCities = 10;
-        int numberOfAnts = 5000;
+        int numberOfCities = 100;
+        int numberOfAnts = 10;
         int pheromoneWeight = 1;
         int visibilityWeight = 2;
         double evaporationCoefficient = 0.001;
@@ -49,17 +48,10 @@ public class TravelingSalesmanApplication {
         Route bestRoute = world.getBestRoute();
 
 
-//        Route route = new Route(numberOfCities, world.distanceMatrix);
-//        SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(world, route);
-//        ArrayList<Route> allRoutes = simulatedAnnealing.fetchAllRoutes();
-//        DistanceGraph distanceGraph = new DistanceGraph(allRoutes);
-//        distanceGraph.pack();
-//        RefineryUtilities.centerFrameOnScreen(distanceGraph);
-//        distanceGraph.setVisible(true);
-//        Route bestRoute = simulatedAnnealing.getBestRoute();
-//        double improvement = ((allRoutes.get(0).getTotalDistance() - bestRoute.getTotalDistance())
-//                / allRoutes.get(0).getTotalDistance()) * 100;
-//        System.out.println("Percentage improvement from initial route"+ improvement);
+        DistanceGraph distanceGraph = new DistanceGraph(world.getAntRoutes());
+        distanceGraph.pack();
+        RefineryUtilities.centerFrameOnScreen(distanceGraph);
+        distanceGraph.setVisible(true);
         TourGraph tourGraph = new TourGraph(world, bestRoute);
         tourGraph.pack();
         RefineryUtilities.centerFrameOnScreen(tourGraph);
